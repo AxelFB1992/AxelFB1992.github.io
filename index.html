@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Axel — Data Engineer</title>
+<meta name="description" content="Portfolio d'Axel, Data Engineer : pipelines de données, cloud, orchestration, streaming et IA générative.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Rubik:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f4ef;
+    --surface: #ffffff;
+    --surface-2: #fbfaf7;
+    --line: #e2ded2;
+    --ink: #16243a;
+    --text: #47536b;
+    --muted: #8791a3;
+    --accent: #e0793d;
+    --accent-ink: #b24b1e;
+    --accent-soft: #fbe8dc;
+    --hero: #16243a;
+    --hero-2: #101b2d;
+    --hero-text: #c9d0dc;
+    --shadow: 0 1px 2px rgba(22, 36, 58, .05), 0 8px 24px rgba(22, 36, 58, .06);
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1828;
+    --surface: #16243a;
+    --surface-2: #1b2b44;
+    --line: #2a3b57;
+    --ink: #f1eee6;
+    --text: #c3cad7;
+    --muted: #8c97ab;
+    --accent: #e98a52;
+    --accent-ink: #f0a374;
+    --accent-soft: #3a2b25;
+    --hero: #0b1220;
+    --hero-2: #080e19;
+    --hero-text: #c3cad7;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1828; --surface: #16243a; --surface-2: #1b2b44; --line: #2a3b57;
+      --ink: #f1eee6; --text: #c3cad7; --muted: #8c97ab; --accent: #e98a52;
+      --accent-ink: #f0a374; --accent-soft: #3a2b25; --hero: #0b1220; --hero-2: #080e19;
+      --hero-text: #c3cad7; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { font-family: 'Rubik', Arial, sans-serif; color: var(--ink); margin: 0; line-height: 1.15; }
+  a { color: inherit; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px; }
+
+  /* Navigation */
+  nav.top {
+    position: sticky; top: 0; z-index: 20;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav.top .wrap { display: flex; align-items: center; gap: 24px; height: 60px; }
+  nav.top .brand { font-family: 'Rubik', sans-serif; font-weight: 600; color: var(--ink); text-decoration: none; margin-right: auto; }
+  nav.top .brand span { color: var(--accent); }
+  nav.top a.link { text-decoration: none; font-size: 15px; color: var(--text); }
+  nav.top a.link:hover { color: var(--accent-ink); }
+  .theme-btn {
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: grid; place-items: center;
+  }
+  .theme-btn svg { width: 18px; height: 18px; }
+
+  /* Hero */
+  header.hero { background: linear-gradient(135deg, var(--hero) 0%, var(--hero-2) 100%); color: var(--hero-text); padding: 88px 0 80px; }
+  header.hero h1 { color: #f6f4ef; font-size: clamp(40px, 6vw, 68px); font-weight: 600; margin-bottom: 18px; }
+  header.hero .lead { font-size: clamp(18px, 2.2vw, 22px); max-width: 720px; margin: 0 0 28px; }
+  .rule { display: flex; align-items: center; gap: 16px; margin-bottom: 30px; font-size: 15px; }
+  .rule::before { content: ""; width: 48px; height: 3px; background: var(--accent); }
+  .stack { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 34px; }
+  .stack span { font-size: 14px; padding: 5px 12px; border: 1px solid rgba(201, 208, 220, .3); border-radius: 999px; color: #e3e7ee; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 600; font-size: 15px;
+    padding: 11px 20px; border-radius: 10px; border: 1px solid transparent; cursor: pointer;
+  }
+  .btn.primary { background: var(--accent); color: #16243a; }
+  .btn.primary:hover { filter: brightness(1.05); }
+  .btn.ghost { border-color: rgba(201, 208, 220, .4); color: #f6f4ef; }
+  .btn.ghost:hover { border-color: #f6f4ef; }
+
+  section.block { padding: 80px 0; }
+  section.block > .wrap > h2 { font-size: clamp(28px, 3.4vw, 38px); margin-bottom: 14px; }
+  .intro { max-width: 720px; margin: 0 0 36px; }
+
+  /* Timeline */
+  .timeline { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(8, 1fr); gap: 0; position: relative; }
+  .timeline::before { content: ""; position: absolute; left: 0; right: 0; top: 19px; height: 2px; background: var(--line); }
+  .timeline li { position: relative; padding-top: 44px; text-align: center; font-size: 14px; color: var(--muted); }
+  .timeline li button {
+    position: absolute; top: 4px; left: 50%; transform: translateX(-50%);
+    width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--accent); background: var(--bg);
+    font-family: 'Rubik', sans-serif; font-weight: 600; font-size: 13px; color: var(--ink); cursor: pointer;
+  }
+  .timeline li button:hover { background: var(--accent); color: #16243a; }
+  .timeline li strong { display: block; color: var(--ink); font-weight: 600; font-size: 14px; line-height: 1.3; padding: 0 6px; }
+
+  /* Filters */
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+  .chip {
+    font: inherit; font-size: 14px; padding: 7px 14px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--surface); color: var(--text);
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .chip:hover { border-color: var(--accent); }
+  .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+  .count { color: var(--muted); font-size: 14px; margin: -14px 0 22px; }
+
+  /* Project cards */
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px;
+    box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 14px;
+    transition: transform .2s, opacity .2s;
+  }
+  .card.hidden { display: none; }
+  .card .head { display: flex; gap: 16px; align-items: flex-start; }
+  .num {
+    flex: none; width: 44px; height: 44px; border-radius: 12px; background: var(--accent-soft); color: var(--accent-ink);
+    display: grid; place-items: center; font-family: 'Rubik', sans-serif; font-weight: 600;
+  }
+  .card h3 { font-size: 21px; margin-bottom: 4px; }
+  .card .ctx { margin: 0; color: var(--muted); font-size: 15px; }
+  .card p.sum { margin: 0; }
+  .tools { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tools span { font-size: 13px; padding: 3px 10px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--line); color: var(--text); }
+  details { border-top: 1px solid var(--line); padding-top: 12px; }
+  summary { cursor: pointer; font-weight: 600; color: var(--ink); font-size: 15px; list-style: none; display: flex; align-items: center; gap: 8px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: "+"; display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 6px; background: var(--accent-soft); color: var(--accent-ink); font-size: 15px; }
+  details[open] summary::before { content: "−"; }
+  details ul { margin: 12px 0 0; padding-left: 20px; }
+  details li { margin-bottom: 6px; }
+  .card .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .skills-mini { display: flex; flex-wrap: wrap; gap: 6px; }
+  .skills-mini span { font-size: 12px; color: var(--accent-ink); }
+  .skills-mini span:not(:last-child)::after { content: " ·"; color: var(--muted); }
+  .repo { font-size: 14px; font-weight: 600; color: var(--ink); text-decoration: none; display: inline-flex; gap: 6px; align-items: center; }
+  .repo:hover { color: var(--accent-ink); }
+  .repo svg { width: 16px; height: 16px; }
+
+  /* Matrix */
+  .matrix-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
+  table.matrix { width: 100%; border-collapse: collapse; min-width: 680px; font-size: 15px; }
+  .matrix th, .matrix td { padding: 12px 10px; border-bottom: 1px solid var(--line); text-align: center; }
+  .matrix thead th { font-family: 'Rubik', sans-serif; font-weight: 600; color: var(--ink); font-size: 14px; background: var(--surface-2); }
+  .matrix th[scope="row"] { text-align: left; font-weight: 500; color: var(--ink); padding-left: 20px; }
+  .matrix tbody tr { cursor: pointer; transition: background .15s; }
+  .matrix tbody tr:hover, .matrix tbody tr.active { background: var(--accent-soft); }
+  .matrix tbody tr:last-child th, .matrix tbody tr:last-child td { border-bottom: 0; }
+  .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); }
+  .hint { font-size: 14px; color: var(--muted); margin-top: 12px; }
+
+  /* Value */
+  .values { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .value { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); }
+  .value .ico { width: 40px; height: 40px; border-radius: 10px; background: var(--accent-soft); color: var(--accent-ink); display: grid; place-items: center; margin-bottom: 14px; }
+  .value .ico svg { width: 22px; height: 22px; }
+  .value h3 { font-size: 18px; margin-bottom: 8px; }
+  .value p { margin: 0; font-size: 15px; }
+
+  footer { background: var(--hero); color: var(--hero-text); padding: 56px 0; }
+  footer h2 { color: #f6f4ef; font-size: 30px; margin-bottom: 10px; }
+  footer p { margin: 0 0 24px; }
+  footer small { display: block; margin-top: 36px; color: #8791a3; font-size: 13px; }
+
+  @media (max-width: 900px) {
+    .values { grid-template-columns: repeat(2, 1fr); }
+    .timeline { grid-template-columns: repeat(4, 1fr); row-gap: 28px; }
+    .timeline::before { display: none; }
+  }
+  @media (max-width: 680px) {
+    nav.top a.link { display: none; }
+    .grid, .values { grid-template-columns: 1fr; }
+    .timeline { grid-template-columns: repeat(2, 1fr); }
+    section.block { padding: 60px 0; }
+    header.hero { padding: 64px 0 56px; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Navigation principale">
+  <div class="wrap">
+    <a class="brand" href="#">Axel<span>.</span></a>
+    <a class="link" href="#parcours">Parcours</a>
+    <a class="link" href="#projets">Projets</a>
+    <a class="link" href="#competences">Compétences</a>
+    <a class="link" href="#contact">Contact</a>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Basculer le thème clair ou sombre">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Portfolio</p>
+    <h1>Axel — Data Engineer</h1>
+    <p class="lead">Je conçois et automatise des chaînes de données de bout en bout : collecte, stockage, transformation, orchestration, mise à disposition et supervision, jusqu’à l’intégration de modèles d’IA générative.</p>
+    <p class="rule">Parcours Data Engineer OpenClassrooms · titre RNCP « Expert en ingénierie et science des données », niveau 7 (bac +5)</p>
+    <div class="stack" aria-label="Technologies principales">
+      <span>Python</span><span>SQL</span><span>PostgreSQL</span><span>MongoDB</span><span>dbt</span><span>Airbyte</span><span>Kestra</span><span>Spark</span><span>Redpanda (Kafka)</span><span>Docker</span><span>AWS</span><span>Google Cloud</span><span>LangChain</span><span>Mistral AI</span>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="#projets">Voir les projets</a>
+      <a class="btn ghost" href="https://github.com/AxelFB1992">Profil GitHub</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="block" id="parcours">
+    <div class="wrap">
+      <p class="eyebrow">Parcours</p>
+      <h2>Du stockage de données à l’IA générative</h2>
+      <p class="intro">Huit projets professionnalisants, de complexité croissante. Cliquez sur une étape pour accéder au projet.</p>
+      <ol class="timeline" id="timeline"></ol>
+    </div>
+  </section>
+
+  <section class="block" id="projets" style="padding-top:0">
+    <div class="wrap">
+      <p class="eyebrow">Projets</p>
+      <h2>Réalisations</h2>
+      <p class="intro">Filtrez les projets par compétence. Chaque carte se déplie pour détailler la réalisation et renvoie vers le dépôt GitHub correspondant.</p>
+      <div class="filters" id="filters" role="group" aria-label="Filtrer par compétence"></div>
+      <p class="count" id="count" aria-live="polite"></p>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <section class="block" id="competences" style="padding-top:0">
+    <div class="wrap">
+      <p class="eyebrow">Compétences</p>
+      <h2>Compétences démontrées</h2>
+      <p class="intro">Chaque compétence est reliée aux projets qui la démontrent.</p>
+      <div class="matrix-wrap">
+        <table class="matrix" id="matrix"></table>
+      </div>
+      <p class="hint">Cliquez sur une ligne pour afficher les projets correspondants.</p>
+    </div>
+  </section>
+
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <p class="eyebrow">Valeur ajoutée</p>
+      <h2>Ce que j’apporte</h2>
+      <div class="values" style="margin-top:30px">
+        <div class="value">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16M14 6l6 6-6 6"/></svg></div>
+          <h3>Une vision de bout en bout</h3>
+          <p>De la source de données brute jusqu’au service exposé à l’utilisateur, en passant par le stockage, la transformation et la supervision.</p>
+        </div>
+        <div class="value">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg></div>
+          <h3>Des pipelines fiables</h3>
+          <p>Tests de qualité à chaque étape, automatisation et monitoring plutôt que traitements manuels.</p>
+        </div>
+        <div class="value">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M6 12h12M10 18h4"/></svg></div>
+          <h3>Des choix argumentés</h3>
+          <p>Des solutions adaptées au besoin, au budget et aux contraintes : simplicité, coût, souveraineté des données.</p>
+        </div>
+        <div class="value">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <h3>Data et IA générative</h3>
+          <p>RAG, bases vectorielles et intégration de modèles de langage dans une architecture de données.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <h2>Contact</h2>
+    <p>Disponible pour échanger sur un poste de Data Engineer ou une mission data.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/AxelFB1992">GitHub</a>
+      <!-- À compléter : remplacer # par l'adresse de votre profil LinkedIn, ou supprimer la ligne -->
+      <a class="btn ghost" href="#">LinkedIn</a>
+    </div>
+    <small>Axel · Data Engineer · Portfolio hébergé sur GitHub Pages</small>
+  </div>
+</footer>
+
+<script>
+  const SKILLS = {
+    bdd: 'Bases de données',
+    pipeline: 'Pipelines de données',
+    orch: 'Orchestration',
+    stream: 'Streaming',
+    cloud: 'Cloud',
+    docker: 'Conteneurisation',
+    qualite: 'Qualité des données',
+    secu: 'Sécurité',
+    ia: 'Machine learning et IA'
+  };
+
+  const PROJECTS = [
+    {
+      n: 5, title: 'Stockage sécurisé de données médicales', short: 'Données médicales',
+      ctx: 'Établissement de santé · base NoSQL',
+      sum: 'Migration automatisée de dossiers patients d’un fichier plat vers une base MongoDB sécurisée et documentée.',
+      details: [
+        'Script de migration Python : nettoyage, transformation et insertion des données',
+        'Modélisation en documents structurés : informations médicales, hospitalisation, facturation',
+        'Trois rôles d’accès distincts : administration, migration, lecture seule',
+        'Environnement conteneurisé avec Docker Compose, migration reproductible'
+      ],
+      tools: ['Python', 'pandas', 'MongoDB', 'Docker Compose'],
+      skills: ['bdd', 'secu', 'docker']
+    },
+    {
+      n: 6, title: 'Consommation énergétique des bâtiments', short: 'Énergie des bâtiments',
+      ctx: 'Ville de Seattle · machine learning',
+      sum: 'Prédiction de la consommation énergétique des bâtiments pour l’objectif de neutralité carbone de la ville, exposée par une API.',
+      details: [
+        'Exploration et préparation des données pour le modèle',
+        'Entraînement et évaluation de plusieurs modèles, dont XGBoost',
+        'Exposition des prédictions par une API BentoML',
+        'Conteneurisation et déploiement sur Google Cloud Run'
+      ],
+      tools: ['Python', 'scikit-learn', 'XGBoost', 'BentoML', 'Docker', 'Google Cloud Run'],
+      skills: ['ia', 'cloud', 'docker']
+    },
+    {
+      n: 7, title: 'Base NoSQL pour l’analyse de locations', short: 'Base NoSQL',
+      ctx: 'Annonces de locations à Paris et Lyon · MongoDB',
+      sum: 'Conception et analyse d’une base MongoDB distribuée sur des annonces de locations de courte durée.',
+      details: [
+        'Import et modélisation des annonces dans MongoDB',
+        'Configuration d’une réplication (ReplicaSet) et d’un partitionnement (sharding)',
+        'Requêtes d’analyse sur de grands volumes',
+        'Connexion à un outil de visualisation via le BI Connector'
+      ],
+      tools: ['MongoDB', 'ReplicaSet', 'Sharding', 'BI Connector', 'Tableau'],
+      skills: ['bdd']
+    },
+    {
+      n: 8, title: 'Pipeline ELT de données météorologiques', short: 'Pipeline ELT',
+      ctx: 'Coopérative · infrastructure de données sur AWS',
+      sum: 'Ingestion de relevés de stations météo, modélisation des données et déploiement d’un pipeline planifié et supervisé sur AWS.',
+      details: [
+        'Extraction et chargement avec Airbyte vers PostgreSQL',
+        'Transformation avec dbt en trois couches : staging, intermediate, marts',
+        'Déploiement sur AWS : RDS, ECR, ECS Fargate',
+        'Orchestration et supervision : Step Functions, EventBridge, CloudWatch, SNS, Secrets Manager'
+      ],
+      tools: ['Airbyte', 'PostgreSQL', 'dbt', 'AWS', 'Docker'],
+      skills: ['pipeline', 'bdd', 'orch', 'cloud', 'docker', 'secu']
+    },
+    {
+      n: 9, title: 'Architecture cloud hybride', short: 'Cloud hybride',
+      ctx: 'Entreprise industrielle · cloud et temps réel',
+      sum: 'Modélisation d’une infrastructure de données hybride sur AWS et POC de traitement en flux de tickets clients.',
+      details: [
+        'Architecture cible : S3, Redshift, DMS, VPN et AD Connector',
+        'Sélection des composants et vérification de leur compatibilité avec le SI existant',
+        'POC streaming : Redpanda et PySpark, entièrement conteneurisé',
+        'Documentation de l’architecture et des choix techniques'
+      ],
+      tools: ['AWS', 'Redshift', 'Redpanda', 'PySpark', 'Docker'],
+      skills: ['cloud', 'stream', 'docker', 'secu']
+    },
+    {
+      n: 10, title: 'Orchestration d’un pipeline de ventes', short: 'Orchestration',
+      ctx: 'Marchand de vin · Kestra',
+      sum: 'Automatisation de l’analyse des ventes à partir de l’ERP et de la boutique en ligne, avec un pipeline planifié chaque mois.',
+      details: [
+        'Nettoyage des sources en parallèle, puis jointure ERP et boutique en ligne',
+        'Calcul du chiffre d’affaires par produit et segmentation des vins premium (z-score)',
+        'Un test de validation après chaque étape du pipeline',
+        'Exports automatiques et planification mensuelle'
+      ],
+      tools: ['Kestra', 'DuckDB', 'Python', 'pandas', 'Docker'],
+      skills: ['orch', 'pipeline', 'qualite', 'docker']
+    },
+    {
+      n: 11, title: 'Chatbot RAG d’événements culturels', short: 'Chatbot RAG',
+      ctx: 'Plateforme d’événements culturels · IA générative',
+      sum: 'POC d’assistant de recommandation d’événements culturels, fondé sur une architecture RAG et les données OpenAgenda.',
+      details: [
+        'Collecte des événements via l’API OpenAgenda',
+        'Nettoyage, filtrage et tests automatisés de qualité des données',
+        'Vectorisation avec mistral-embed et index vectoriel FAISS',
+        'Chaîne RAG avec LangChain et Mistral : filtrage par lieu, repli sur tout le corpus, réponses sans invention'
+      ],
+      tools: ['Python', 'LangChain', 'Mistral AI', 'FAISS'],
+      skills: ['ia', 'pipeline', 'qualite']
+    },
+    {
+      n: 12, title: 'Infrastructure de données automatisée', short: 'Infra automatisée',
+      ctx: 'Plateforme d’entraînement à la course à pied · batch et temps réel',
+      sum: 'Automatisation de l’infrastructure de données, en traitement par lots et en temps réel.',
+      details: [
+        'Traitements par lots orchestrés avec Kestra, modélisation PostgreSQL et dbt',
+        'Flux temps réel avec Redpanda et Debezium (capture des changements)',
+        'Tests de qualité des données avec Soda',
+        'Enrichissement par l’API Google Maps'
+      ],
+      tools: ['Kestra', 'PostgreSQL', 'dbt', 'Redpanda', 'Debezium', 'Soda'],
+      skills: ['orch', 'pipeline', 'stream', 'qualite', 'bdd']
+    }
+  ];
+
+  const repo = n => `https://github.com/AxelFB1992/projet${n}`;
+  const gh = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg>';
+  const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  // Timeline
+  document.getElementById('timeline').innerHTML = PROJECTS.map(p =>
+    `<li><button type="button" data-goto="${p.n}" aria-label="Aller au projet ${p.n}">${p.n}</button><strong>${esc(p.short)}</strong></li>`
+  ).join('');
+
+  // Cards
+  const grid = document.getElementById('grid');
+  grid.innerHTML = PROJECTS.map(p => `
+    <article class="card" id="p${p.n}" data-skills="${p.skills.join(' ')}">
+      <div class="head">
+        <div class="num" aria-hidden="true">${p.n}</div>
+        <div><h3>${esc(p.title)}</h3><p class="ctx">Projet ${p.n} · ${esc(p.ctx)}</p></div>
+      </div>
+      <p class="sum">${esc(p.sum)}</p>
+      <div class="tools">${p.tools.map(t => `<span>${esc(t)}</span>`).join('')}</div>
+      <details><summary>Réalisation</summary><ul>${p.details.map(d => `<li>${esc(d)}</li>`).join('')}</ul></details>
+      <div class="foot">
+        <div class="skills-mini">${p.skills.map(s => `<span>${SKILLS[s]}</span>`).join('')}</div>
+        <a class="repo" href="${repo(p.n)}">Voir le dépôt ${gh}</a>
+      </div>
+    </article>`).join('');
+
+  // Filters
+  const filters = document.getElementById('filters');
+  const count = document.getElementById('count');
+  let current = 'all';
+  filters.innerHTML = `<button class="chip" type="button" data-skill="all" aria-pressed="true">Tous les projets</button>` +
+    Object.entries(SKILLS).map(([k, v]) => `<button class="chip" type="button" data-skill="${k}" aria-pressed="false">${v}</button>`).join('');
+
+  function applyFilter(skill) {
+    current = skill;
+    let shown = 0;
+    document.querySelectorAll('.card').forEach(c => {
+      const ok = skill === 'all' || c.dataset.skills.split(' ').includes(skill);
+      c.classList.toggle('hidden', !ok);
+      if (ok) shown++;
+    });
+    filters.querySelectorAll('.chip').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.skill === skill)));
+    document.querySelectorAll('#matrix tbody tr').forEach(r => r.classList.toggle('active', r.dataset.skill === skill));
+    count.textContent = skill === 'all' ? `${shown} projets` : `${shown} projet${shown > 1 ? 's' : ''} · ${SKILLS[skill]}`;
+  }
+  filters.addEventListener('click', e => {
+    const b = e.target.closest('.chip');
+    if (b) applyFilter(b.dataset.skill);
+  });
+
+  // Matrix
+  const matrix = document.getElementById('matrix');
+  matrix.innerHTML = `<thead><tr><th scope="col" style="text-align:left;padding-left:20px">Compétence</th>${PROJECTS.map(p => `<th scope="col">P${p.n}</th>`).join('')}</tr></thead>
+    <tbody>${Object.entries(SKILLS).map(([k, v]) => `<tr data-skill="${k}" tabindex="0"><th scope="row">${v}</th>${PROJECTS.map(p =>
+      `<td>${p.skills.includes(k) ? '<span class="dot" role="img" aria-label="oui"></span>' : '<span class="sr" aria-label="non"></span>'}</td>`).join('')}</tr>`).join('')}</tbody>`;
+  function fromMatrix(row) {
+    if (!row) return;
+    applyFilter(row.dataset.skill === current ? 'all' : row.dataset.skill);
+    document.getElementById('projets').scrollIntoView();
+  }
+  matrix.addEventListener('click', e => fromMatrix(e.target.closest('tbody tr')));
+  matrix.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fromMatrix(e.target.closest('tbody tr')); } });
+
+  // Timeline -> card
+  document.getElementById('timeline').addEventListener('click', e => {
+    const b = e.target.closest('button[data-goto]');
+    if (!b) return;
+    applyFilter('all');
+    const card = document.getElementById('p' + b.dataset.goto);
+    card.scrollIntoView({ block: 'center' });
+    card.querySelector('details').open = true;
+  });
+
+  // Theme
+  const root = document.documentElement;
+  try { const t = localStorage.getItem('theme'); if (t) root.dataset.theme = t; } catch (e) {}
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+    try { localStorage.setItem('theme', root.dataset.theme); } catch (e) {}
+  });
+
+  applyFilter('all');
+</script>
+</body>
+</html>
